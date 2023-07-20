@@ -1,0 +1,25 @@
+.inputs{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+input{
+    padding: 15px;
+    margin: 10px 0px;
+    border-radius: 5px;
+    border: 1px solid grey;
+}
+label{
+    font-size: 15px;
+    color: rgb(97, 95, 95);
+}
+span{
+    color: red;
+    display: none;
+}
+input:invalid[focusedMove="true"] {
+    border: 1px solid red;
+}
+input:invalid[focusedMove="true"] ~ span{
+    display: block;
+}
