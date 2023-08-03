@@ -1,26 +1,49 @@
 import React, { useState } from "react";
 import "./FromInput.css";
-const FormInput = (props) => {
-    const [focusedMove, setFocusedMove] = useState(false)
-    const {label, errormessage, onChange, id, ...inputProps} = props;
+import { TextField, FormHelperText } from "@material-ui/core";
 
-    const handleFocus = (e) => {
-        setFocusedMove(true)
+const FormInput = ({ label, message, onChange, id, required, ...inputProps }) => {
+  const [focusedMove, setFocusedMove] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleFocus = (e) => {
+    setFocusedMove(true);
+  };
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    onChange(e);
+
+    if (inputProps.pattern) {
+      const regex = new RegExp(inputProps.pattern);
+      if (!regex.test(inputValue)) {
+        setErrorMessage(message);
+      } else {
+        setErrorMessage("");
+      }
     }
+  };
+
   return (
     <div className="inputs">
-      <label>{label}</label>
-      <input 
+      <TextField
+        className="custom-form-input"
+        variant="outlined"
+        label={label}
+        required={required}
         {...inputProps}
-        onChange={onChange}
-        onBlur={handleFocus}
-        onFocus={() => 
-          inputProps.name==="confirmPassword" && setFocusedMove(true)
-        }
         focusedMove={focusedMove.toString()}
-        autocomplete="off"
+        autoComplete="off"
+        inputProps={{
+          pattern: inputProps.pattern,
+        }}
+        error={Boolean(errorMessage)}
+        onChange={handleInputChange}
+        onBlur={handleFocus}
+        onFocus={handleFocus}
       />
-      <span>{errormessage}</span>
+      {message && <FormHelperText>{message}</FormHelperText>}
+      {errorMessage && <FormHelperText error>{errorMessage}</FormHelperText>}
     </div>
   );
 };

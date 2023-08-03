@@ -1,97 +1,86 @@
-import { useState } from 'react';
-import './App.css';
-import FormInput from './components/FormInput';
+import React, { useState } from "react";
+import "./App.css";
+import FormInput from "./components/FormInput";
 
 function App() {
+  const [values, setValues] = useState({
+    cardName: "",
+    cardNumber: "",
+    cvv: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const [values,setValues] = useState({
-    username:"",
-    email:"",
-    fullname:"",
-    password:"",
-    confirmPassword:""
-  })
-  // const usernameRef = useRef()
-  
   const inputs = [
     {
       id: 1,
-      name: "username",
+      name: "cardName",
       type: "text",
-      errormessage: "Username should be 4-16 characters and shouldn't include any special character!",
-      placeholder: "User Name",
-      label: "Username",
-      pattern: "^[A-Za-z0-9]{4,16}$",
-      required: true
+      message: "Please enter the name on card",
+      label: "Name on card",
+      pattern: "^[A-Za-z]{4,16}$",
+      required: true,
     },
     {
       id: 2,
-      name: "email",
-      type: "email",
-      errormessage: "It should be valid email address",
-      placeholder: "abc@gmail.com",
-      label: "E-mail",
-      required: true
+      name: "cardNumber",
+      type: "number",
+      message: "Please enter your full payment card number",
+      label: "Please enter your full payment card number",
+      required: true,
     },
     {
       id: 3,
-      name: "fullname",
-      type: "text",
-      errormessage: "Enter valid name",
-      placeholder: "Enter your Fullname",
-      label: "Full Name",
-      pattern: "^[A-Za-z ]*",
-      required: true
+      name: "cvv",
+      type: "number",
+      message: "This is the 3-digit number found on the back of the card",
+      label: "CVV",
+      pattern: "^[0-9]{3}$",
+      required: true,
     },
     {
       id: 4,
       name: "password",
       type: "password",
-      errormessage: "Password should be 6-12 characters and it should include at least 1 letter, 1 number and 1 special character!",
-      placeholder: "password",
+      message:
+        "Password should be 6-12 characters and include at least 1 letter, 1 number, and 1 special character!",
       label: "Password",
       pattern: `^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$`,
-      required: true
+      required: true,
     },
     {
       id: 5,
       name: "confirmPassword",
       type: "password",
-      errormessage: "Passwords dont match",
-      placeholder: "Confirm password",
-      pattern: values.password,
+      message: "Passwords don't match",
       label: "Confirm password",
-      required: true
+      required: true,
     },
-  ]
-  const handleSubmit=(e)=>{
-    e.preventDefault();
-    // const data = new FormData(e.target)
-    // console.log(Object.fromEntries(data.entries()))
-  }
-  
-  const onChange =(e) =>{
-    setValues({...values, [e.target.name]: e.target.value})
-  }
+  ];
 
-  console.log(values)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with values:", values);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
 
   return (
     <div className="App">
       <form onSubmit={handleSubmit}>
-        <h1>Register here!!</h1>
-        {
-          inputs.map(input => 
-            <FormInput 
-              key={input.id} 
-              {...input} 
-              value={values[input.name]} 
-              onChange={onChange}
-            />
-          )
-        }
-        
-        <button>Submit</button>
+        <h1>Create your account Here!!</h1>
+        {inputs.map((input) => (
+          <FormInput
+            key={input.id}
+            {...input}
+            value={values[input.name]}
+            onChange={handleChange}
+          />
+        ))}
+        <button type="submit">Submit</button>
       </form>
     </div>
   );
