@@ -1,13 +1,39 @@
 import React, { useState } from "react";
 import "./FromInput.css";
-import { TextField, FormHelperText } from "@material-ui/core";
+import { TextField, FormHelperText, FormControl, makeStyles as inputMakeStyles } from "@material-ui/core";
 
-const FormInput = ({ label, message, onChange, id, required, ...inputProps }) => {
-  const [focusedMove, setFocusedMove] = useState(false);
+const useStyles = inputMakeStyles((theme) => ({
+  textFieldRoot: {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'grey',
+      },
+      '&:hover fieldset': {
+        borderColor: 'black',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'black',
+      },
+      '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#ffcccb', 
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: 'grey',
+      '&.Mui-focused': {
+        color: 'black',
+      },
+    },
+  },
+}));
+
+const FormInput = ({ label, message, errMessage, onChange, id, required, ...inputProps }) => {
+  const [focusedmove, setfocusedmove] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const classes = useStyles();
 
   const handleFocus = (e) => {
-    setFocusedMove(true);
+    setfocusedmove(true);
   };
 
   const handleInputChange = (e) => {
@@ -17,7 +43,7 @@ const FormInput = ({ label, message, onChange, id, required, ...inputProps }) =>
     if (inputProps.pattern) {
       const regex = new RegExp(inputProps.pattern);
       if (!regex.test(inputValue)) {
-        setErrorMessage(message);
+        setErrorMessage(errMessage);
       } else {
         setErrorMessage("");
       }
@@ -26,24 +52,23 @@ const FormInput = ({ label, message, onChange, id, required, ...inputProps }) =>
 
   return (
     <div className="inputs">
-      <TextField
-        className="custom-form-input"
-        variant="outlined"
-        label={label}
-        required={required}
-        {...inputProps}
-        focusedMove={focusedMove.toString()}
-        autoComplete="off"
-        inputProps={{
-          pattern: inputProps.pattern,
-        }}
-        error={Boolean(errorMessage)}
-        onChange={handleInputChange}
-        onBlur={handleFocus}
-        onFocus={handleFocus}
-      />
-      {message && <FormHelperText>{message}</FormHelperText>}
-      {errorMessage && <FormHelperText error>{errorMessage}</FormHelperText>}
+      <FormControl variant="outlined" error={Boolean(errorMessage)}>
+        <TextField
+          variant="outlined"
+          size="small"
+          label={required ? `${label}*` : `${label}`}
+          required={required}
+          {...inputProps}
+          focusedmove={focusedmove.toString()}
+          autoComplete="off"
+          error={Boolean(errorMessage)}
+          onChange={handleInputChange}
+          onBlur={handleFocus}
+          onFocus={handleFocus}
+          classes={{ root: classes.textFieldRoot }}
+        />
+      </FormControl>
+      {errorMessage ? <FormHelperText error>{errorMessage}</FormHelperText> : <FormHelperText>{message}</FormHelperText>}
     </div>
   );
 };
